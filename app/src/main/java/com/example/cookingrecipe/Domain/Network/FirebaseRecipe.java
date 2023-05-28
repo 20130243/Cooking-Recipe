@@ -23,8 +23,17 @@ import java.util.List;
 
 public class FirebaseRecipe {
     DatabaseReference databaseReference;
+
     public interface RecipeListCallback {
         void onRecipeListReady(List<Recipe> recipeList);
+
+
+    }
+
+    public interface RecipeCallback {
+        void onRecipeReady(Recipe recipe);
+
+
     }
 
     public void getAllRecipe(RecipeListCallback callback) {
@@ -74,6 +83,26 @@ public class FirebaseRecipe {
 //        return recipeList;
     }
 
+    public void getRecipeById(String recipeId, RecipeCallback callback) {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("recipes").child(recipeId);
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            Recipe recipe;
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    recipe = convert(dataSnapshot);
+                    callback.onRecipeReady(recipe);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
     public Recipe convert(DataSnapshot dataSnapshot) {
         Recipe recipe = new Recipe();
         recipe.setId(dataSnapshot.getKey());
@@ -110,6 +139,7 @@ public class FirebaseRecipe {
         DataSnapshot stepsSnapshot = dataSnapshot.child("steps");
         for (DataSnapshot stepSnapshot : stepsSnapshot.getChildren()) {
             int stepOrder = stepSnapshot.child("step_order").getValue(Integer.class);
+            System.out.println(stepOrder + " day la buoc");
             String description = stepSnapshot.child("description").getValue(String.class);
             String image = stepsSnapshot.child("image").getValue(String.class);
             steps.add(new Step(stepOrder, description, image));
@@ -130,36 +160,31 @@ public class FirebaseRecipe {
 
     public void insertRecipe(Recipe recipe) {
         databaseReference = FirebaseDatabase.getInstance().getReference("recipes");
-        Recipe recipe1 = new Recipe(null, "Bánh mì thịt nướng", "Bánh mì thơm ngon với thịt nướng, rau thơm và nước sốt chấm", "https://cdn.tgdd.vn/Files/2021/08/20/1376583/cach-lam-banh-mi-thit-nuong-cuc-don-gian-bang-chai-nhua-co-san-tai-nha-202108201640593483.jpg", "1", 30, Arrays.asList("Bánh mì", "Điểm tâm"), null, null);
+        Ingredient bun = new Ingredient("Bún tươi", 200, "g");
+        Ingredient thitHeo = new Ingredient("Thịt heo", 200, "g");
+        Ingredient tom = new Ingredient("Tôm tươi", 100, "g");
+        Ingredient hanhTim = new Ingredient("Hành tím", 1, "củ");
+        Ingredient dauAn = new Ingredient("Dầu ăn", 1, "thìa canh");
+        Ingredient muoi = new Ingredient("Muối", 1, "muỗng cà phê");
+        Ingredient duong = new Ingredient("Đường", 1, "muỗng cà phê");
+        Ingredient tieu = new Ingredient("Tiêu", 1, "muỗng cà phê");
+        Ingredient nuocMam = new Ingredient("Nước mắm", 1, "muỗng canh");
 
-        List<Ingredient> ingredients = new ArrayList<>();
-        Ingredient ingredient = new Ingredient("Thịt nướng", 200, "g");
-        ingredients.add(ingredient);
-        ingredient = new Ingredient("Rau thơm", 50, "g");
-        ingredients.add(ingredient);
-        ingredient = new Ingredient("Nước mắm", 2, "thìa canh");
-        ingredients.add(ingredient);
-        ingredient = new Ingredient("Đường", 1, "thìa canh");
-        ingredients.add(ingredient);
-        ingredient = new Ingredient("Tỏi băm", 1, "thìa cafe");
-        ingredients.add(ingredient);
-        ingredient = new Ingredient("Ớt băm nhuyễn", 1, "thìa cafe");
-        ingredients.add(ingredient);
-        recipe1.setIngredients(ingredients);
+// Tạo đối tượng Step
+        Step step1 = new Step(1, "Thái thịt heo và tôm thành từng miếng vừa ăn. Băm nhỏ hành tím.", null);
+        Step step2 = new Step(2, "Cho dầu ăn vào chảo, đợi dầu nóng rồi cho thịt heo, tôm và hành tím vào chiên đến khi thịt và tôm chín vàng, hành thơm.", null);
+        Step step3 = new Step(3, "Nấu bún tươi trong nước sôi khoảng 3-4 phút cho chín, sau đó rửa sạch bằng nước lạnh và để ráo.", null);
+        Step step4 = new Step(4, "Chuẩn bị nước chấm: trộn đều nước mắm, đường, tiêu và nước chanh.", null);
+        Step step5 = new Step(5, "Đắp bún và rau sống lên đĩa, sau đó thêm chả giò và thịt heo, tôm đã chiên lên trên. Dùng nước chấm kèm.", null);
 
-        List<Step> steps = new ArrayList<>();
-        Step step = new Step(1, "Chuẩn bị nước sốt: trộn đều nước mắm, đường, tỏi băm và ớt băm nhuyễn.", "https://cdn.tgdd.vn/Files/2021/08/20/1376583/cach-lam-banh-mi-thit-nuong-cuc-don-gian-bang-chai-nhua-co-san-tai-nha-202108201647284558.jpg");
-        steps.add(step);
-        step = new Step(2, "Thái thịt nướng thành từng miếng mỏng.", null);
-        steps.add(step);
-        step = new Step(3, "Rã đôi bánh mì, nướng trên bếp hoặc lò vi sóng để bánh mì giòn.", null);
-        steps.add(step);
-        step = new Step(4, "Sắp xếp rau thơm, thịt nướng, cà chua và dưa chuột lên bánh mì.", null);
-        steps.add(step);
-        step = new Step(5, "Phục vụ bánh mì với nước sốt chấm.", "https://cdn.tgdd.vn/Files/2021/08/20/1376583/cach-lam-banh-mi-thit-nuong-cuc-don-gian-bang-chai-nhua-co-san-tai-nha-202108201657055360.jpg");
-        steps.add(step);
-        recipe1.setSteps(steps);
-        databaseReference.push().setValue(recipe1);
+// Tạo danh sách nguyên liệu và bước nấu
+        List<Ingredient> ingredients = Arrays.asList(bun, thitHeo, tom, hanhTim, dauAn, muoi, duong, tieu, nuocMam);
+
+        List<Step> steps = Arrays.asList(step1, step2, step3, step4, step5);
+
+// Tạo đối tượng Recipe
+        Recipe bunChaGio = new Recipe("null", "Bún chả giò", "Bún tươi và thơm phức được kết hợp với chả giò giòn rụm, rau sống và nước chấm đậm đà.", "https://cdn.tgdd.vn/Files/2021/08/20/1376583/cach-lam-banh-mi-thit-nuong-cuc-don-gian-bang-chai-nhua-co-san-tai-nha-202108201640593483.jpg", "4", 30, Arrays.asList("Món chính"), ingredients, steps);
+        databaseReference.push().setValue(bunChaGio);
 
     }
 }

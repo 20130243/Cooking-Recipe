@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import com.example.cookingrecipe.Domain.Network.FirebaseRecipe;
 import com.example.cookingrecipe.R;
 
 public class IntroActivity extends AppCompatActivity {
@@ -16,7 +17,7 @@ public class IntroActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro);
-
+        new FirebaseRecipe().insertRecipe(null);
         startBtn = findViewById(R.id.startBtn);
         startBtn.setOnClickListener(new View.OnClickListener() {
             @Override

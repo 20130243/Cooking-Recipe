@@ -36,4 +36,13 @@ public class Step {
         this.description = description;
         this.image = image;
     }
+
+    @Override
+    public String toString() {
+        return "Step{" +
+                "step_order=" + step_order +
+                ", description='" + description + '\'' +
+                ", image='" + image + '\'' +
+                '}';
+    }
 }

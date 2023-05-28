@@ -7,17 +7,6 @@
         android:contentDescription="favorite"
         android:icon="@drawable/ic_favorite"
         android:title="favorite"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 
-    <item
-        android:id="@+id/share"
-        android:contentDescription="share"
-        android:icon="@drawable/ic_share"
-        android:title="share"
-        app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/more"
-        android:contentDescription="more"
-        android:title="more"
-        app:showAsAction="never" />
 </menu>

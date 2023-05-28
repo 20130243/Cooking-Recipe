@@ -24,13 +24,14 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.Vi
     @Override
     public IngredientAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View inflater = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_holder_ingredient, parent, false);
-        return new IngredientAdapter.ViewHolder(inflater);
+        return new ViewHolder(inflater);
     }
 
     @Override
     public void onBindViewHolder(@NonNull IngredientAdapter.ViewHolder holder, int position) {
-        Ingredient ingredient = recipe.getIngredients().get(position);
+        Ingredient ingredient = recipe.getIngredients().get(holder.getAdapterPosition());
         holder.ingredient_text.setText(ingredient.getAmount() + " " + ingredient.getUnit() + " " + ingredient.getName());
+        System.out.println("đaz toi day");
 
     }
 
@@ -39,13 +40,13 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.Vi
         return recipe.getIngredients().size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView ingredient_text;
         ConstraintLayout main_layout;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            ingredient_text = itemView.findViewById(R.id.step_text);
+            ingredient_text = itemView.findViewById(R.id.ingredient_text);
             main_layout = itemView.findViewById(R.id.main_layout);
         }
     }

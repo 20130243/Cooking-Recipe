@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -41,7 +42,7 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
@@ -56,34 +57,29 @@ public class HomeFragment extends Fragment {
 
     private void recyclerViewRecipeToday() {
         //danh sach cac cong thuc
-        new FirebaseRecipe().getAllRecipe(new FirebaseRecipe.RecipeListCallback() {
+        new FirebaseRecipe().getAllRecipe(recipeList -> {
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+            recyclerViewRecipeTodayList = binding.recyclerViewToday;
+            recyclerViewRecipeTodayList.setLayoutManager(linearLayoutManager);
 
-            @Override
-            public void onRecipeListReady(List<Recipe> recipeList) {
-                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
-                recyclerViewRecipeTodayList = binding.recyclerViewToday;
-                recyclerViewRecipeTodayList.setLayoutManager(linearLayoutManager);
-
-                RecipeTodayAdapter recipeTodayAdapter = new RecipeTodayAdapter(recipeList);
-                recipeTodayAdapter.setOnItemClickListener(new OnItemClickListener() {
-                    @Override
-                    public void onItemClick(String recipeId) {
-                        Intent intent = new Intent(getActivity(), DetailRecipeActivity.class);
-                        intent.putExtra("recipeId", recipeId);
-                        startActivity(intent);
-                    }
-                });
-                adapter = recipeTodayAdapter;
-
-                recyclerViewRecipeTodayList.setAdapter(adapter);
-            }
+            RecipeTodayAdapter recipeTodayAdapter = new RecipeTodayAdapter(recipeList);
+            recipeTodayAdapter.setOnItemClickListener(new OnItemClickListener() {
+                @Override
+                public void onItemClick(String recipeId) {
+                    Intent intent = new Intent(getActivity(), DetailRecipeActivity.class);
+                    intent.putExtra("recipeId", recipeId);
+                    startActivity(intent);
+                }
+            });
+            adapter = recipeTodayAdapter;
+            recyclerViewRecipeTodayList.setAdapter(adapter);
         });
 
     }
 
     private void recyclerViewCategory() {
         //danh sach cac muc
-        ArrayList<Type> typeList = new ArrayList();
+        ArrayList<Type> typeList = new ArrayList<>();
         typeList.add(new Type(0, "Món chính", "burger"));
         typeList.add(new Type(1, "Ăn vặt", "cake"));
         typeList.add(new Type(2, "Sức khỏe", "carrot"));

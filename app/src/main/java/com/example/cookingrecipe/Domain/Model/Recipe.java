@@ -1,9 +1,14 @@
 package com.example.cookingrecipe.Domain.Model;
 
-import java.util.List;
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
+import java.util.List;
+@Entity(tableName = "recipes")
 public class Recipe {
-    String id;
+    @PrimaryKey
+    @NonNull String id;
     String title;
     String description;
     String image;

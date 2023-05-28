@@ -24,7 +24,7 @@ import com.example.cookingrecipe.R;
 
 import java.util.List;
 
-public class RecipeTodayAdapter extends RecyclerView.Adapter<RecipeTodayAdapter.ViewHolder> {
+public class RecipeFavoriteAdapter extends RecyclerView.Adapter<RecipeFavoriteAdapter.ViewHolder> {
     List<Recipe> recipeList;
     private OnItemClickListener listener;
 
@@ -32,14 +32,14 @@ public class RecipeTodayAdapter extends RecyclerView.Adapter<RecipeTodayAdapter.
         this.listener = listener;
     }
 
-    public RecipeTodayAdapter(List<Recipe> recipeList) {
+    public RecipeFavoriteAdapter(List<Recipe> recipeList) {
         this.recipeList = recipeList;
     }
 
 
     @NonNull
     @Override
-    public RecipeTodayAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public RecipeFavoriteAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View inflater = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_holder_today, parent, false);
         return new ViewHolder(inflater);
     }
@@ -47,7 +47,7 @@ public class RecipeTodayAdapter extends RecyclerView.Adapter<RecipeTodayAdapter.
 
 
     @Override
-    public void onBindViewHolder(@NonNull RecipeTodayAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecipeFavoriteAdapter.ViewHolder holder, int position) {
         Recipe recipe = recipeList.get(holder.getAdapterPosition());
 
         holder.recipeTitle.setText(recipe.getTitle());
