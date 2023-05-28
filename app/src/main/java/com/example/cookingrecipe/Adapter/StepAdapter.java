@@ -35,12 +35,10 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.ViewHolder> {
 
         if (recipe.getSteps() != null) {
             Step step = recipe.getSteps().get(holder.getAdapterPosition());
-            System.out.println(step.toString() + " co step mà");
             holder.step_title.setText("Bước " + step.getStep_order());
             holder.step_text.setText(step.getDescription());
 
             String imageUrl = recipe.getSteps().get(position).getImage();
-            System.out.println(imageUrl);
             if (imageUrl != null && !imageUrl.isEmpty()) {
                 Glide.with(holder.step_image.getContext())
                         .load(imageUrl)

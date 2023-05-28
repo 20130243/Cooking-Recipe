@@ -1,25 +1,39 @@
-package com.example.cookingrecipe.Domain.Model;
+package com.example.cookingrecipe.Room.Entity;
 
-import com.example.cookingrecipe.Room.Entity.RecipeEntity;
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
+
+import com.example.cookingrecipe.Domain.Model.Ingredient;
+import com.example.cookingrecipe.Domain.Model.Recipe;
+import com.example.cookingrecipe.Domain.Model.Step;
+import com.example.cookingrecipe.Room.DAO.IngredientConverter;
+import com.example.cookingrecipe.Room.DAO.StepConverter;
+import com.example.cookingrecipe.Room.DAO.TagConverter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Recipe {
-    String id;
-    String title;
-    String description;
-    String image;
-    String servings;
-    int time;
-    List<String> tags;
-    List<Ingredient> ingredients;
-    List<Step> steps;
+@Entity(tableName = "recipes")
+@TypeConverters({TagConverter.class, IngredientConverter.class, StepConverter.class})
+public class RecipeEntity {
+    @PrimaryKey
+    @NonNull
+    private String id;
+    private String title;
+    private String description;
+    private String image;
+    private String servings;
+    private int time;
+    @TypeConverters(TagConverter.class)
+    private List<String> tags;
+    @TypeConverters(IngredientConverter.class)
+    private List<Ingredient> ingredients;
+    @TypeConverters(StepConverter.class)
+    private List<Step> steps;
 
-    public Recipe() {
-    }
-
-    public Recipe(String id, String title, String description, String image, String servings, int time, List<String> tags, List<Ingredient> ingredients, List<Step> steps) {
+    public RecipeEntity(@NonNull String id, String title, String description, String image, String servings, int time, List<String> tags, List<Ingredient> ingredients, List<Step> steps) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -31,11 +45,12 @@ public class Recipe {
         this.steps = steps;
     }
 
+    @NonNull
     public String getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(@NonNull String id) {
         this.id = id;
     }
 
@@ -103,10 +118,13 @@ public class Recipe {
         this.steps = steps;
     }
 
+    public RecipeEntity() {
+    }
+
     @Override
     public String toString() {
-        return "Recipe{" +
-                "id=" + id +
+        return "RecipeEntity{" +
+                "id='" + id + '\'' +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", image='" + image + '\'' +
@@ -118,18 +136,16 @@ public class Recipe {
                 '}';
     }
 
-    public RecipeEntity toRecipeEntity() {
-        return new RecipeEntity(this.id, this.title, this.description, this.getImage(), this.servings, this.time, this.tags, this.ingredients, this.steps);
+    public Recipe toRecipe() {
+        return new Recipe(this.id, this.title, this.description, this.getImage(), this.servings, this.time, this.tags, this.ingredients, this.steps);
     }
 
-
-    public List<RecipeEntity> toRecipeEntityList(List<Recipe> list) {
-        List<RecipeEntity> recipeEntities = new ArrayList<>();
-        for (Recipe recipe : list) {
-            recipeEntities.add(recipe.toRecipeEntity());
+    public List<Recipe> toRecipeList(List<RecipeEntity> list) {
+        List<Recipe> recipe = new ArrayList<>();
+        for (RecipeEntity recipeEntity : list) {
+            recipe.add(recipeEntity.toRecipe());
         }
-        return recipeEntities;
+        return recipe;
     }
-
 
 }

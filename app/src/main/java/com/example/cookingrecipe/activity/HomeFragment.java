@@ -17,7 +17,6 @@ import com.example.cookingrecipe.Adapter.RecipeTodayAdapter;
 import com.example.cookingrecipe.Domain.Model.Recipe;
 import com.example.cookingrecipe.Domain.Model.Type;
 import com.example.cookingrecipe.Domain.Network.FirebaseRecipe;
-import com.example.cookingrecipe.OnItemClickListener;
 import com.example.cookingrecipe.databinding.FragmentHomeBinding;
 
 import java.util.ArrayList;
@@ -63,13 +62,10 @@ public class HomeFragment extends Fragment {
             recyclerViewRecipeTodayList.setLayoutManager(linearLayoutManager);
 
             RecipeTodayAdapter recipeTodayAdapter = new RecipeTodayAdapter(recipeList);
-            recipeTodayAdapter.setOnItemClickListener(new OnItemClickListener() {
-                @Override
-                public void onItemClick(String recipeId) {
-                    Intent intent = new Intent(getActivity(), DetailRecipeActivity.class);
-                    intent.putExtra("recipeId", recipeId);
-                    startActivity(intent);
-                }
+            recipeTodayAdapter.setOnItemClickListener(recipeId -> {
+                Intent intent = new Intent(getActivity(), DetailRecipeActivity.class);
+                intent.putExtra("recipeId", recipeId);
+                startActivity(intent);
             });
             adapter = recipeTodayAdapter;
             recyclerViewRecipeTodayList.setAdapter(adapter);

@@ -40,45 +40,28 @@ public class RecipeFavoriteAdapter extends RecyclerView.Adapter<RecipeFavoriteAd
     @NonNull
     @Override
     public RecipeFavoriteAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View inflater = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_holder_today, parent, false);
+        View inflater = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_holder_favorite, parent, false);
         return new ViewHolder(inflater);
     }
-
 
 
     @Override
     public void onBindViewHolder(@NonNull RecipeFavoriteAdapter.ViewHolder holder, int position) {
         Recipe recipe = recipeList.get(holder.getAdapterPosition());
 
-        holder.recipeTitle.setText(recipe.getTitle());
+        holder.titleFavorite.setText(recipe.getTitle());
+        holder.descriptionFavorite.setText(recipe.getDescription());
 
         String imageURL = recipe.getImage();
-        holder.main_layout.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(), R.drawable.cat_bg));
-
         if (!imageURL.isBlank()) {
-            Glide.with(holder.recipeImage.getContext())
+            Glide.with(holder.imageFavorite.getContext())
                     .load(imageURL)
-                    .listener(new RequestListener<Drawable>() {
-                        @Override
-                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                            System.out.println("Lỗi khi tải ảnh: " + e.getMessage());
-                            return false;
-                        }
-                        @Override
-                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                            System.out.println("Tải ảnh thành công");
-                            return false;
-                        }
-                    })
-                    .into(holder.recipeImage);
+                    .into(holder.imageFavorite);
         }
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (listener != null) {
-                    listener.onItemClick(recipe.getId());
-                }
+        holder.click_area.setOnClickListener(view -> {
+            if (listener != null) {
+                listener.onItemClick(recipe.getId());
             }
         });
     }
@@ -90,15 +73,19 @@ public class RecipeFavoriteAdapter extends RecyclerView.Adapter<RecipeFavoriteAd
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView recipeTitle;
-        ImageView recipeImage;
+        TextView titleFavorite;
+        TextView descriptionFavorite;
+        ImageView imageFavorite;
         ConstraintLayout main_layout;
+        ConstraintLayout click_area;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            recipeTitle = itemView.findViewById(R.id.recipe_today_title);
-            recipeImage = itemView.findViewById(R.id.recipe_today_image);
-            main_layout = itemView.findViewById(R.id.recipe_today_layout);
+            imageFavorite = itemView.findViewById(R.id.image_favorite);
+            titleFavorite = itemView.findViewById(R.id.title_favorite);
+            descriptionFavorite = itemView.findViewById(R.id.description_favorite);
+            main_layout = itemView.findViewById(R.id.main_layout);
+            click_area = itemView.findViewById(R.id.click_area);
         }
     }
 }

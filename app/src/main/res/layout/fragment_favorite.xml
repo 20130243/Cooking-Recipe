@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.FavouriteFragment">
+    tools:context=".activity.FavoriteFragment">
 
     <!-- TODO: Update blank fragment layout -->
 
@@ -15,18 +15,23 @@
         <TextView
             android:id="@+id/textView2"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
+            android:background="@color/white"
             android:fontFamily="@font/be_vietnam_bold"
+            android:gravity="center"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
             android:text="@string/Favorite"
+            android:textAlignment="viewStart"
             android:textSize="20sp"
-            app:layout_constraintBottom_toTopOf="@+id/scrollView2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ScrollView
             android:id="@+id/scrollView2"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -40,7 +45,7 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyler_favorite"
                     android:layout_width="match_parent"
-                    android:layout_height="703dp" />
+                    android:layout_height="wrap_content" />
             </LinearLayout>
         </ScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>

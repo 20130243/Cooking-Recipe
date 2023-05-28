@@ -1,9 +1,13 @@
 package com.example.cookingrecipe.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.view.Menu;
+import android.widget.TextView;
 
 import com.example.cookingrecipe.R;
 import com.example.cookingrecipe.databinding.ActivityMainBinding;
@@ -32,12 +36,14 @@ public class MainActivity extends AppCompatActivity {
             } else if (item.getItemId() == R.id.insert) {
                 replaceFragment(new HomeFragment());
             } else if (item.getItemId() == R.id.favorite) {
-                replaceFragment(new FavouriteFragment());
+                replaceFragment(new FavoriteFragment());
             } else if (item.getItemId() == R.id.account) {
                 replaceFragment(new AccountFragment());
             }
             return true;
         });
+
+
 
 
     }

@@ -31,7 +31,6 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.Vi
     public void onBindViewHolder(@NonNull IngredientAdapter.ViewHolder holder, int position) {
         Ingredient ingredient = recipe.getIngredients().get(holder.getAdapterPosition());
         holder.ingredient_text.setText(ingredient.getAmount() + " " + ingredient.getUnit() + " " + ingredient.getName());
-        System.out.println("đaz toi day");
 
     }
 

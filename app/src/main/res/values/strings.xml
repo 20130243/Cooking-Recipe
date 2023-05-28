@@ -13,6 +13,11 @@
     <string name="Ingredients">Nguyên liệu</string>
     <string name="Step">Các bước</string>
     <string name="Favorite">Danh sách các công thức yêu thích</string>
+    <string name="home_navigation">Trang chủ</string>
+    <string name="search_navigation">Tìm kiếm</string>
+    <string name="insert_navigation">Thêm</string>
+    <string name="favorite_navigation">Yêu thích</string>
+    <string name="account_navigation">Tài khoản</string>
 
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris

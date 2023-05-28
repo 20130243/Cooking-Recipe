@@ -37,8 +37,6 @@ public class FirebaseRecipe {
     }
 
     public void getAllRecipe(RecipeListCallback callback) {
-
-
         databaseReference = FirebaseDatabase.getInstance().getReference("recipes");
         List<Recipe> recipeList = new ArrayList<>();
 
@@ -57,7 +55,6 @@ public class FirebaseRecipe {
                     recipeList.set(index, recipe);
                 }
             }
-
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
@@ -79,8 +76,6 @@ public class FirebaseRecipe {
             }
         });
 
-
-//        return recipeList;
     }
 
     public void getRecipeById(String recipeId, RecipeCallback callback) {
@@ -139,7 +134,6 @@ public class FirebaseRecipe {
         DataSnapshot stepsSnapshot = dataSnapshot.child("steps");
         for (DataSnapshot stepSnapshot : stepsSnapshot.getChildren()) {
             int stepOrder = stepSnapshot.child("step_order").getValue(Integer.class);
-            System.out.println(stepOrder + " day la buoc");
             String description = stepSnapshot.child("description").getValue(String.class);
             String image = stepsSnapshot.child("image").getValue(String.class);
             steps.add(new Step(stepOrder, description, image));

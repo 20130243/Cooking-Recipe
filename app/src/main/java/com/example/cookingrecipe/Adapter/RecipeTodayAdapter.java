@@ -58,27 +58,12 @@ public class RecipeTodayAdapter extends RecyclerView.Adapter<RecipeTodayAdapter.
         if (!imageURL.isBlank()) {
             Glide.with(holder.recipeImage.getContext())
                     .load(imageURL)
-                    .listener(new RequestListener<Drawable>() {
-                        @Override
-                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                            System.out.println("Lỗi khi tải ảnh: " + e.getMessage());
-                            return false;
-                        }
-                        @Override
-                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                            System.out.println("Tải ảnh thành công");
-                            return false;
-                        }
-                    })
                     .into(holder.recipeImage);
         }
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (listener != null) {
-                    listener.onItemClick(recipe.getId());
-                }
+        holder.itemView.setOnClickListener(view -> {
+            if (listener != null) {
+                listener.onItemClick(recipe.getId());
             }
         });
     }
