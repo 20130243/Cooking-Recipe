@@ -1,0 +1,15 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.CookingRecipe" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="android:statusBarColor">@color/orange</item>
+    </style>
+
+    <style name="MyMaterialTopBar" parent="Widget.MaterialComponents.Toolbar.PrimarySurface">
+        <!-- Thiết lập màu cho biểu tượng option -->
+        <item name="android:tint">@color/white</item>
+    </style>
+
+    <style name="Theme.CookingRecipe" parent="Base.Theme.CookingRecipe" />
+</resources>

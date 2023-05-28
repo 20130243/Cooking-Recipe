@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "977714203751",
+    "firebase_url": "https://cooking-recipe-df3bd-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "cooking-recipe-df3bd",
+    "storage_bucket": "cooking-recipe-df3bd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:977714203751:android:9f67afc711505f964e18c2",
+        "android_client_info": {
+          "package_name": "com.example.cookingrecipe"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "977714203751-btm1u3h4d9rp5q6p8pug4p94qau5rq7r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBK5HCZk9qY2qYT_NQIeml6D6y1RL0lnWA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "977714203751-btm1u3h4d9rp5q6p8pug4p94qau5rq7r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
