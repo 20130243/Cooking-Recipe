@@ -11,11 +11,12 @@ import android.widget.TextView;
 
 import com.example.cookingrecipe.R;
 import com.example.cookingrecipe.databinding.ActivityMainBinding;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 
 public class MainActivity extends AppCompatActivity {
     ActivityMainBinding binding;
-
+private BottomNavigationView bottomNavigationView;
     public MainActivity() {
     }
 
@@ -27,8 +28,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         replaceFragment(new HomeFragment());
-
-        binding.bottomNavigation.setOnItemSelectedListener(item -> {
+        bottomNavigationView = binding.bottomNavigation;
+        bottomNavigationView.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.home) {
                 replaceFragment(new HomeFragment());
             } else if (item.getItemId() == R.id.search) {

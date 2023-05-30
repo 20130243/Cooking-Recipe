@@ -1,66 +1,196 @@
 package com.example.cookingrecipe.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 
-import com.example.cookingrecipe.R;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link SearchFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import com.example.cookingrecipe.Adapter.RecipeListAdapter;
+import com.example.cookingrecipe.Domain.Model.Recipe;
+import com.example.cookingrecipe.Domain.Network.FirebaseRecipe;
+import com.example.cookingrecipe.Domain.Network.NetworkHelper;
+import com.example.cookingrecipe.Room.AppDatabase;
+import com.example.cookingrecipe.Room.DAO.RecipeDao;
+import com.example.cookingrecipe.Room.Entity.RecipeEntity;
+import com.example.cookingrecipe.databinding.FragmentSearchBinding;
+
+import java.text.Normalizer;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Pattern;
+
 public class SearchFragment extends Fragment {
+    FragmentSearchBinding binding;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private RecyclerView.Adapter adapter;
+    SearchView searchView;
+    List<Recipe> recipeList;
+    RecyclerView recyclerSearch;
+    Boolean isLocalDataLoaded = false;
+    Boolean isFirebaseDataLoaded = false;
+    private CountDownLatch countDownLatch;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public SearchFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SearchFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static SearchFragment newInstance(String param1, String param2) {
-        SearchFragment fragment = new SearchFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_search, container, false);
+        binding = FragmentSearchBinding.inflate(inflater, container, false);
+        View view = binding.getRoot();
+
+        searchView = binding.search;
+        recyclerSearch = binding.recylerSearch;
+
+        showRecipe();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                searchRecipe(newText);
+                return true;
+            }
+        });
+
+
+        return view;
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+         searchView.requestFocus();
+    }
+
+
+    public void searchRecipe(String text) {
+        List<Recipe> searchList = new ArrayList<>();
+        if (recipeList != null) {
+            if (text != null) {
+                for (Recipe recipe : recipeList) {
+                    if (removeAccent(recipe.getTitle().toLowerCase())
+                            .contains(removeAccent(text.toLowerCase()))) {
+                        searchList.add(recipe);
+                    }
+                }
+            } else {
+                searchList = recipeList;
+            }
+
+
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+            recyclerSearch = binding.recylerSearch;
+            recyclerSearch.setLayoutManager(linearLayoutManager);
+
+            RecipeListAdapter recipeListAdapter = new RecipeListAdapter(searchList, AppDatabase.getInstance(this.getActivity()));
+            recipeListAdapter.setOnItemClickListener(recipeId -> {
+                Intent intent = new Intent(getActivity(), DetailRecipeActivity.class);
+                intent.putExtra("recipeId", recipeId);
+                startActivity(intent);
+            });
+            recipeListAdapter.setOnFavoriteIconClickListener((position, recipeId) -> {
+            });
+
+            adapter = recipeListAdapter;
+            recyclerSearch.setAdapter(adapter);
+        }
+    }
+
+    public void showRecipe() {
+        List<Recipe> showList1 = new ArrayList<>();
+        AtomicInteger i = new AtomicInteger();
+        if (NetworkHelper.isNetworkConnected(this.getActivity())) {
+            new FirebaseRecipe().getAllRecipe(list -> {
+                recipeList = list;
+
+                isFirebaseDataLoaded = true;
+
+                if (recipeList != null) {
+                    Set<Recipe> showSet = new HashSet<>();
+                    for (Recipe recipe : recipeList) {
+                        if (showSet.size() < 12) {
+                            showSet.add(recipe);
+                        } else {
+                            break;
+                        }
+                    }
+
+                    List<Recipe> showList = new ArrayList<>(showSet);
+                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+                    recyclerSearch = binding.recylerSearch;
+                    recyclerSearch.setLayoutManager(linearLayoutManager);
+
+                    RecipeListAdapter recipeListAdapter = new RecipeListAdapter(showList, AppDatabase.getInstance(this.getActivity()));
+                    recipeListAdapter.setOnItemClickListener(recipeId -> {
+                        Intent intent = new Intent(getActivity(), DetailRecipeActivity.class);
+                        intent.putExtra("recipeId", recipeId);
+                        startActivity(intent);
+                    });
+                    recipeListAdapter.setOnFavoriteIconClickListener((position, recipeId) -> {
+                    });
+
+                    adapter = recipeListAdapter;
+                    recyclerSearch.setAdapter(adapter);
+                }
+            });
+        } else {
+            AppDatabase db = AppDatabase.getInstance(this.getActivity());
+            RecipeDao recipeDao = db.recipeDao();
+            recipeList = new RecipeEntity().toRecipeList(recipeDao.getAll());
+            isLocalDataLoaded = true;
+
+            if (recipeList != null) {
+                Set<Recipe> showSet = new HashSet<>();
+                for (Recipe recipe : recipeList) {
+                    if (showSet.size() < 12) {
+                        showSet.add(recipe);
+                    } else {
+                        break;
+                    }
+                }
+
+                List<Recipe> showList = new ArrayList<>(showSet);
+                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+                recyclerSearch = binding.recylerSearch;
+                recyclerSearch.setLayoutManager(linearLayoutManager);
+
+                RecipeListAdapter recipeListAdapter = new RecipeListAdapter(showList, AppDatabase.getInstance(this.getActivity()));
+                recipeListAdapter.setOnItemClickListener(recipeId -> {
+                    Intent intent = new Intent(getActivity(), DetailRecipeActivity.class);
+                    intent.putExtra("recipeId", recipeId);
+                    startActivity(intent);
+                });
+                recipeListAdapter.setOnFavoriteIconClickListener((position, recipeId) -> {
+                });
+
+                adapter = recipeListAdapter;
+                recyclerSearch.setAdapter(adapter);
+            }
+        }
+
+    }
+
+    private String removeAccent(String s) {
+        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+        String strFormD = Normalizer.normalize(s, Normalizer.Form.NFD);
+        return pattern.matcher(strFormD).replaceAll("").replace('đ', 'd').replace('Đ', 'D');
     }
 }

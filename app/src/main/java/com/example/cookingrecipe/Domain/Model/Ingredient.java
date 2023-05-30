@@ -2,7 +2,7 @@ package com.example.cookingrecipe.Domain.Model;
 
 public class Ingredient {
     String name;
-    int amount;
+    String amount;
     String unit;
 
     public Ingredient() {
@@ -16,11 +16,11 @@ public class Ingredient {
         this.name = name;
     }
 
-    public int getAmount() {
+    public String getAmount() {
         return amount;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(String amount) {
         this.amount = amount;
     }
 
@@ -32,7 +32,7 @@ public class Ingredient {
         this.unit = unit;
     }
 
-    public Ingredient(String name, int amount, String unit) {
+    public Ingredient(String name, String amount, String unit) {
         this.name = name;
         this.amount = amount;
         this.unit = unit;

@@ -1,66 +1,99 @@
 package com.example.cookingrecipe.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.cookingrecipe.R;
+import com.example.cookingrecipe.databinding.FragmentAccountBinding;
+import com.example.cookingrecipe.databinding.FragmentFavoriteBinding;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link AccountFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class AccountFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    FragmentAccountBinding binding;
+    Button logout_btn;
+    Button login_btn;
+    TextView name;
+    TextView email;
+    ImageView profile_image;
+    GoogleSignInOptions gso;
+    GoogleSignInClient gsc;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    ConstraintLayout login_layout;
+    ConstraintLayout profile_layout;
 
-    public AccountFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment AccountFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static AccountFragment newInstance(String param1, String param2) {
-        AccountFragment fragment = new AccountFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_account, container, false);
+        binding = FragmentAccountBinding.inflate(inflater, container, false);
+        View view = binding.getRoot();
+
+
+        profile_layout = binding.profile;
+        login_layout = binding.login;
+
+        logout_btn = binding.logoutBtn;
+        logout_btn.setOnClickListener(v -> signOut());
+        login_btn = binding.loginBtn;
+        login_btn.setOnClickListener(v -> startActivity(new Intent(this.getActivity(), Login.class)));
+
+        name = binding.name;
+        email = binding.email;
+        profile_image = binding.profileImg;
+
+        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
+        gsc = GoogleSignIn.getClient(getActivity(), gso);
+        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getActivity());
+        if (acct != null) {
+            profile_layout.setVisibility(View.VISIBLE);
+            login_layout.setVisibility(View.GONE);
+            String acct_name = acct.getDisplayName();
+            String acct_email = acct.getEmail();
+            String url_image = String.valueOf(acct.getPhotoUrl());
+
+            name.setText(acct_name);
+            email.setText(acct_email);
+            if (!url_image.isBlank()) {
+                Glide.with(getActivity())
+                        .load(url_image)
+                        .into(profile_image);
+            }
+        } else {
+            profile_layout.setVisibility(View.GONE);
+            login_layout.setVisibility(View.VISIBLE);
+        }
+
+
+        return view;
+    }
+
+    void signOut() {
+        gsc.signOut().addOnCompleteListener(task -> {
+            getActivity().finish();
+            startActivity(new Intent(getActivity(), MainActivity.class));
+        });
     }
 }

@@ -12,7 +12,7 @@
         android:name="com.example.cookingrecipe.activity.HomeFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintBottom_toTopOf="@+id/layout_info"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -22,7 +22,7 @@
     </androidx.fragment.app.FragmentContainerView>
 
     <LinearLayout
-        android:id="@+id/linearLayout"
+        android:id="@+id/layout_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"

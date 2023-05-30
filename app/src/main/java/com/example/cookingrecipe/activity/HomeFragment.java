@@ -7,7 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,7 +21,9 @@ import com.example.cookingrecipe.Adapter.RecipeTodayAdapter;
 import com.example.cookingrecipe.Domain.Model.Recipe;
 import com.example.cookingrecipe.Domain.Model.Type;
 import com.example.cookingrecipe.Domain.Network.FirebaseRecipe;
+import com.example.cookingrecipe.R;
 import com.example.cookingrecipe.databinding.FragmentHomeBinding;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,14 +33,11 @@ public class HomeFragment extends Fragment {
     private RecyclerView.Adapter adapter;
     private RecyclerView recyclerViewCategoryList;
     private RecyclerView recyclerViewRecipeTodayList;
+
+    private ConstraintLayout searchButton;
     FragmentHomeBinding binding;
 
-
-    public HomeFragment() {
-        // Required empty public constructor
-    }
-
-
+    private NavController navController;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,18 +45,21 @@ public class HomeFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
-
 
         recyclerViewCategory();
         recyclerViewRecipeToday();
 
+        searchButton = binding.searchBtn;
+        searchButton.setOnClickListener(v -> openSearchFragment());
         return view;
     }
 
-
+    public void openSearchFragment() {
+        BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.search);
+    }
     private void recyclerViewRecipeToday() {
         //danh sach cac cong thuc
         new FirebaseRecipe().getAllRecipe(recipeList -> {

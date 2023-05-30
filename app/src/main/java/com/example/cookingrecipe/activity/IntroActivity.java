@@ -7,8 +7,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import com.example.cookingrecipe.Domain.Model.Recipe;
 import com.example.cookingrecipe.Domain.Network.FirebaseRecipe;
+import com.example.cookingrecipe.Domain.Network.test;
 import com.example.cookingrecipe.R;
+
+import java.util.List;
 
 public class IntroActivity extends AppCompatActivity {
     private ConstraintLayout startBtn;
@@ -18,11 +22,9 @@ public class IntroActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro);
         startBtn = findViewById(R.id.startBtn);
-        startBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(IntroActivity.this, MainActivity.class));
-            }
-        });
+        startBtn.setOnClickListener(v -> startActivity(new Intent(IntroActivity.this, MainActivity.class)));
+//        List<Recipe> list = new test().recipeList();
+
+
     }
 }
