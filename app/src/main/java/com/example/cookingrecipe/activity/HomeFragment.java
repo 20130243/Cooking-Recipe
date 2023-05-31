@@ -17,11 +17,17 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cookingrecipe.Adapter.CategoryAdapter;
+import com.example.cookingrecipe.Adapter.RecipeFavoriteHomeListAdapter;
+import com.example.cookingrecipe.Adapter.RecipeListAdapter;
 import com.example.cookingrecipe.Adapter.RecipeTodayAdapter;
 import com.example.cookingrecipe.Domain.Model.Recipe;
 import com.example.cookingrecipe.Domain.Model.Type;
 import com.example.cookingrecipe.Domain.Network.FirebaseRecipe;
+import com.example.cookingrecipe.Domain.Network.NetworkHelper;
 import com.example.cookingrecipe.R;
+import com.example.cookingrecipe.Room.AppDatabase;
+import com.example.cookingrecipe.Room.DAO.RecipeDao;
+import com.example.cookingrecipe.Room.Entity.RecipeEntity;
 import com.example.cookingrecipe.databinding.FragmentHomeBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -33,11 +39,13 @@ public class HomeFragment extends Fragment {
     private RecyclerView.Adapter adapter;
     private RecyclerView recyclerViewCategoryList;
     private RecyclerView recyclerViewRecipeTodayList;
+    private RecyclerView getRecyclerViewRecipeFavoriteList;
 
     private ConstraintLayout searchButton;
     FragmentHomeBinding binding;
 
     private NavController navController;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +57,14 @@ public class HomeFragment extends Fragment {
         View view = binding.getRoot();
 
         recyclerViewCategory();
-        recyclerViewRecipeToday();
+        if(new NetworkHelper().isNetworkConnected(getActivity())){
+            recyclerViewRecipeToday();
+        }else{
+            ConstraintLayout today_layout = binding.recipeTodayLayout;
+            today_layout.setVisibility(View.GONE);
+        }
+
+        recyclerViewRecipeFavorite();
 
         searchButton = binding.searchBtn;
         searchButton.setOnClickListener(v -> openSearchFragment());
@@ -60,9 +75,11 @@ public class HomeFragment extends Fragment {
         BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.search);
     }
+
     private void recyclerViewRecipeToday() {
         //danh sach cac cong thuc
-        new FirebaseRecipe().getAllRecipe(recipeList -> {
+        new FirebaseRecipe().getRandomRecipes(12, recipeList -> {
+
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
             recyclerViewRecipeTodayList = binding.recyclerViewToday;
             recyclerViewRecipeTodayList.setLayoutManager(linearLayoutManager);
@@ -76,6 +93,27 @@ public class HomeFragment extends Fragment {
             adapter = recipeTodayAdapter;
             recyclerViewRecipeTodayList.setAdapter(adapter);
         });
+    }
+
+    private void recyclerViewRecipeFavorite() {
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+        getRecyclerViewRecipeFavoriteList = binding.recyclerViewRecipeFavorite;
+        getRecyclerViewRecipeFavoriteList.setLayoutManager(linearLayoutManager);
+
+        AppDatabase db = AppDatabase.getInstance(this.getActivity());
+        RecipeDao recipeDao = db.recipeDao();
+        List<Recipe> recipeList = new RecipeEntity().toRecipeList(recipeDao.getAll());
+
+        RecipeFavoriteHomeListAdapter recipeFavoriteHomeListAdapter = new RecipeFavoriteHomeListAdapter(recipeList);
+        recipeFavoriteHomeListAdapter.setOnItemClickListener(recipeId -> {
+            Intent intent = new Intent(getActivity(), DetailRecipeActivity.class);
+            intent.putExtra("recipeId", recipeId);
+            startActivity(intent);
+        });
+
+        adapter = recipeFavoriteHomeListAdapter;
+        getRecyclerViewRecipeFavoriteList.setAdapter(adapter);
+
 
     }
 

@@ -106,7 +106,7 @@ public class DetailRecipeActivity extends AppCompatActivity {
             String s = Arrays.toString(recipeEntity.getTags().toArray(new String[0]));
             String text = "Mời bạn thử công thức này:\n" // Nội dung của công thức
                     + "Tên công thức: " + recipeEntity.getTitle() + "\n"
-                    + "Mô tả: " + recipeEntity.getDescription() + "\n" 
+                    + "Mô tả: " + recipeEntity.getDescription() + "\n"
                     + "Số người: " + recipeEntity.getServings() + "\n"
                     + "Thời gian: " + recipeEntity.getTime() + " phút\n"
                     + "Loại món: " + s + "\n"

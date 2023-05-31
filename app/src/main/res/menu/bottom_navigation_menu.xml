@@ -16,8 +16,8 @@
     <item
         android:id="@+id/insert"
         android:enabled="true"
-        android:icon="@drawable/ic_add_circle"
-        android:title="@string/insert_navigation"
+        android:icon="@drawable/chat_48px"
+        android:title="@string/chat_navigation"
         app:actionLayout="@menu/menu_item_layout" />
     <item
         android:id="@+id/favorite"

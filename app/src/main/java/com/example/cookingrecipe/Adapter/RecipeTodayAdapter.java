@@ -43,18 +43,14 @@ public class RecipeTodayAdapter extends RecyclerView.Adapter<RecipeTodayAdapter.
     @Override
     public void onBindViewHolder(@NonNull RecipeTodayAdapter.ViewHolder holder, int position) {
         Recipe recipe = recipeList.get(holder.getAdapterPosition());
-
         holder.recipeTitle.setText(recipe.getTitle());
-
         String imageURL = recipe.getImage();
         holder.main_layout.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(), R.drawable.cat_bg));
-
         if (!imageURL.isBlank()) {
             Glide.with(holder.recipeImage.getContext())
                     .load(imageURL)
                     .into(holder.recipeImage);
         }
-
         holder.itemView.setOnClickListener(view -> {
             if (listener != null) {
                 listener.onItemClick(recipe.getId());

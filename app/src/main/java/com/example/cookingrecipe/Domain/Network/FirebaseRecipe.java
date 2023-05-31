@@ -11,6 +11,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -21,14 +22,10 @@ public class FirebaseRecipe {
 
     public interface RecipeListCallback {
         void onRecipeListReady(List<Recipe> recipeList);
-
-
     }
 
     public interface RecipeCallback {
         void onRecipeReady(Recipe recipe);
-
-
     }
 
     public void getAllRecipe(RecipeListCallback callback) {
@@ -70,7 +67,25 @@ public class FirebaseRecipe {
             }
         });
     }
+    public void getRandomRecipes(int count, RecipeListCallback callback) {
+        databaseReference = FirebaseDatabase.getInstance().getReference("recipes");
+        Query query = databaseReference.orderByChild("id").limitToLast(count);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<Recipe> recipeList = new ArrayList<>();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    recipeList.add(convert(snapshot));
+                }
+                callback.onRecipeListReady(recipeList);
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Xử lý lỗi ở đây
+            }
+        });
+    }
     public void getRecipeById(String recipeId, RecipeCallback callback) {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("recipes").child(recipeId);
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {

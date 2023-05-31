@@ -35,7 +35,7 @@ private BottomNavigationView bottomNavigationView;
             } else if (item.getItemId() == R.id.search) {
                 replaceFragment(new SearchFragment());
             } else if (item.getItemId() == R.id.insert) {
-                replaceFragment(new HomeFragment());
+                replaceFragment(new ChatFragment());
             } else if (item.getItemId() == R.id.favorite) {
                 replaceFragment(new FavoriteFragment());
             } else if (item.getItemId() == R.id.account) {

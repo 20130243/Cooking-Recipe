@@ -50,7 +50,6 @@ public class SearchFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         binding = FragmentSearchBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
 
@@ -71,13 +70,13 @@ public class SearchFragment extends Fragment {
             }
         });
 
-
         return view;
     }
+
     @Override
     public void onResume() {
         super.onResume();
-         searchView.requestFocus();
+        searchView.requestFocus();
     }
 
 
@@ -120,9 +119,7 @@ public class SearchFragment extends Fragment {
         if (NetworkHelper.isNetworkConnected(this.getActivity())) {
             new FirebaseRecipe().getAllRecipe(list -> {
                 recipeList = list;
-
                 isFirebaseDataLoaded = true;
-
                 if (recipeList != null) {
                     Set<Recipe> showSet = new HashSet<>();
                     for (Recipe recipe : recipeList) {
@@ -132,8 +129,8 @@ public class SearchFragment extends Fragment {
                             break;
                         }
                     }
-
                     List<Recipe> showList = new ArrayList<>(showSet);
+
                     LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
                     recyclerSearch = binding.recylerSearch;
                     recyclerSearch.setLayoutManager(linearLayoutManager);
